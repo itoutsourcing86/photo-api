@@ -8,14 +8,14 @@ from .permissions import IsOwnerOrReadOnly
 
 # Create your views here.
 
+
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAdminUser, ]
 
-
     def get_queryset(self):
         return User.objects.annotate(
-            total_photos = Count('photos__image'),
+            total_photos=Count('photos__image'),
         )
 
 
@@ -26,8 +26,8 @@ class PhotoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Photo.objects.annotate(
-            total_votes = Count('ratings'),
-            average_rating = Avg('ratings__rating'),
+            total_votes=Count('ratings'),
+            average_rating=Avg('ratings__rating'),
         )
 
     def perform_create(self, serializer):
@@ -37,7 +37,7 @@ class PhotoViewSet(viewsets.ModelViewSet):
 class RatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
-    permission_classes = [permissions.IsAuthenticated, ]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, ]
     http_method_names = ['post', 'get']
 
     def perform_create(self, serializer):

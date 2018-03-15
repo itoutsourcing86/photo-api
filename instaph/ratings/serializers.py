@@ -1,7 +1,6 @@
-from rest_framework import serializers
+from rest_framework import serializers, validators
 from django.contrib.auth.models import User
 from .models import Photo, Rating
-from rest_framework.validators import UniqueTogetherValidator
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,6 +18,8 @@ class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
         fields = ('user', 'photo', 'rating')
+        validators = [validators.UniqueTogetherValidator(queryset=Rating.objects.all(), fields=('user', 'photo'),
+                                                         message='You have already rated this photo'), ]
 
 
 class PhotoSerializer(serializers.ModelSerializer):
